@@ -448,7 +448,6 @@ public class Analizador_Lexico implements java_cup.runtime.Scanner {
   /* user code: */
    public static boolean is_date = true;
    public static String concatenado = "";
-   public static int Count_Lexico = 0;
 
 
   /**
@@ -819,8 +818,7 @@ public class Analizador_Lexico implements java_cup.runtime.Scanner {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
-            { Count_Lexico += 1;
-         String cadena = "<tr>"+"\n"+"<td>"+"Error_Lexico"+"</td>"+"<td>"+yytext()+"</td>"+"<td>"+(yyline + 1)+"</td>"+"<td>"+(yycolumn + 1)+"</td>"+"\n"+"</tr>"+"\n";
+            { String cadena = "<tr>"+"\n"+"<td>"+"Error_Lexico"+"</td>"+"<td>"+yytext()+"</td>"+"<td>"+(yyline + 1)+"</td>"+"<td>"+(yycolumn + 1)+"</td>"+"\n"+"</tr>"+"\n";
          concatenado += cadena;
             } 
             // fall through
