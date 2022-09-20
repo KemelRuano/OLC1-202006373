@@ -12,6 +12,7 @@ import Analizador.Analizador_sintactico;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java_cup.runtime.Symbol;
 
 /**
@@ -68,6 +69,7 @@ public class Main_window  extends JFrame implements ActionListener {
         boton1  = new JButton("ver codigo GOLANG"); 
         boton1.setBounds(420,420,150,25);
         boton1.setVisible(true);
+        boton1.addActionListener(this);
         panel1.add(boton1);
         
         boton2  = new JButton("ver codigo PYTHON"); 
@@ -110,6 +112,8 @@ public class Main_window  extends JFrame implements ActionListener {
        
     }
 
+  
+ 
     @Override
     public void actionPerformed(ActionEvent ae) {
         
@@ -179,20 +183,29 @@ public class Main_window  extends JFrame implements ActionListener {
 
             }
             
+            
+            
         }else if(ae.getSource() == run){
             try{
             Analizador_Lexico  lexico = new Analizador_Lexico(new BufferedReader(new StringReader(area1.getText())));
             Analizador_sintactico sintactico = new Analizador_sintactico(lexico);
             sintactico.parse();
+           
             
             Errores.setText(String.valueOf(Analizador_Lexico.Count_Lexico)+"   Errores");
            }catch(Exception e){}
+          
             
             
         }else if(ae.getSource() == clean){
                                Errores.setText("0 Errores");
                                area1.setText(null);
+        }else if(ae.getSource() == boton1){
+                        area1.setText(null);
+                        area1.setText( Analizador_sintactico.SalidaGolang + "\n");
+                               
         }
+        
     }
     
     

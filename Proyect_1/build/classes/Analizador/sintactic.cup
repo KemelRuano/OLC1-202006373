@@ -1,9 +1,17 @@
 package Analizador;
 import java_cup.runtime.Symbol;
 import proyect_1.Metodos;
+import proyect_1.Nodo;
+import proyect_1.Main_window;
+import java.util.LinkedList;
 
 parser code
 {:
+    public static Nodo raiz;
+        
+    public Nodo getRaiz(){
+            return raiz;
+    }
     
     public static String SalidaGolang=""; 
     public static String Temp="";
@@ -32,6 +40,22 @@ parser code
     public static String Salidarepetir = "";
     public static boolean Reptir = true; 
     public static boolean Rep_not = true; 
+    public static String  AUX = "";
+
+    
+    public void syntax_error(Symbol s)
+    {
+        System.err.println("Error en la Linea " + (s.right+1) +" Columna "+(s.left+1)+ ". Identificador "+s.value + " no reconocido. Se ha recuperado del error." );
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
+    {
+        System.err.println("Error en la Linea " + (s.right+1)+ " Columna "+(s.left+1)+". Identificador " +s.value + " no reconocido.");
+    }
+
+
+
+
 
 :}
 action code 
@@ -54,7 +78,7 @@ terminal String  tmayor,tmenor,tMayigual,tmenigual,tigual,tdistinto,tand,tor,tno
 
 non terminal INICIO ,JERARQUIA,
 SUB,SUB2,MENU,Lista_Operaciones,AGREGAR_VALORES;
-
+non terminal Nodo SUBMENU;
 non terminal String DECLARACION, ASIGNACION,CUAL_TIPO,VARIABLES,PREINICIO,CUALTIPO_II,IMPRIMIR,VARIABLES2;
 
 // ----- terminales para CONDICIONAL SI --------------------
@@ -74,34 +98,42 @@ non terminal String MIENTRAS,CON_SI2,INS_MIEN2,CON_SI3,REPT_HASTA,RETURNN;
 
 start with INICIO;
 
-INICIO::= tinicio  MENU{:System.out.println(SalidaGolang);:} tfin ;
+INICIO::= tinicio  MENU:a{: System.out.println(SalidaGolang);
+SalidaGolang += "\npackage main" + "\nimport(" + "\n\t" + '"' + "fmt" + '"' + "\n\t" + '"' + "math" + '"' + "\n)";
+SalidaGolang += "\nfunc main(){" + "\n"+ AUX  + "\n" + "}";
+  :} tfin ;
 
 
 
-MENU ::= MENU Lista_Operaciones
-    | Lista_Operaciones
+MENU ::= MENU SUBMENU
+    | SUBMENU        
 ;
 
-Lista_Operaciones ::= ASIGNACION:asig
-                     {: SalidaGolang += asig;:}
+SUBMENU ::= Lista_Operaciones; 
+
+
+Lista_Operaciones ::= ASIGNACION:asig  
+              {:  AUX  += asig;:}
+ 
         | DECLARACION:dec
-            {: SalidaGolang += dec;:}
-        | comentario:comento
-            {: SalidaGolang += comento+"\n";:}
+            {: AUX  += dec;:}
+        | comentario:comento   {:  
+                                    SalidaGolang += comento+"\n";                                           
+                               :}   
         | IMPRIMIR:b
-            {: SalidaGolang += b;:}
+            {: AUX  += b;:}
         | CONDICIONAL_SI:c
-            {: SalidaGolang += c+"\n"; SalidaIF=""; :}
+            {: AUX  += c+"\n"; SalidaIF=""; :}
         | SWITCH:a
-            {: SalidaGolang += a+"\n"; SalidaSwitch = ""; :}
+            {: AUX  += a+"\n"; SalidaSwitch = ""; :}
         | PARA:para
-            {: SalidaGolang += para+"\n";  SalidaPara="";:}
+            {: AUX  += para+"\n";  SalidaPara="";:}
         | MIENTRAS:mien 
-            {: SalidaGolang += mien+"\n";  SalidaMientras="";:}
+            {: AUX  += mien+"\n";  SalidaMientras="";:}
         | REPT_HASTA:rept
-            {: SalidaGolang += rept+"\n";  Salidarepetir="";:}
+            {: AUX  += rept+"\n";  Salidarepetir="";:}
         | RETURNN:ret
-            {: SalidaGolang += ret+"\n"; :}
+            {: AUX  += ret+"\n"; :}
 ;
 
 
@@ -123,8 +155,7 @@ PREINICIO ::=  tTipoDato:tipo tconValor CUAL_TIPO:valor  tpuntoComa {: RESULT = 
 
 //------------------------------------------ asignacion-----------------------------------------------------------------------------------
 
-ASIGNACION ::= VARIABLES2 tasignacion CUAL_TIPO:valor tpuntoComa{: RESULT = TempAsig+Metodos.asignacion(valor,CountValor); CountValor = 0;:}
-            
+ASIGNACION ::= VARIABLES2:a tasignacion CUAL_TIPO:valor tpuntoComa{: RESULT = TempAsig+Metodos.asignacion(valor,CountValor); CountValor = 0;:}    
 ;
 
 VARIABLES2 ::=  VARIABLES2 coma:d variable:a
@@ -152,8 +183,8 @@ CUAL_TIPO ::= Entero:valor
              {: RESULT = valor; :}
     | variable:valor
              {: RESULT = valor; :}
-    | Valida_SC:valor
-             {: RESULT = valor; :}
+    | Valida_SC:valor 
+         {: RESULT = valor; :}
 ;
 
 
