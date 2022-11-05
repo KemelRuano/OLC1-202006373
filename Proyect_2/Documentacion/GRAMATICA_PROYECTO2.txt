@@ -1,0 +1,281 @@
+INICIO
+  : INSTRUCCIONES EOF 
+
+
+INSTRUCCIONES
+  : INSTRUCCIONES INSTRUCCION  
+  | INSTRUCCION                
+
+INSTRUCCION
+  : DECLARACION_VARIABLE        
+  | ASIGNACION                    
+  | INCREMENTO_DECREMENTO         
+  | FOR                          
+  | INSTRUCCION_IF                
+  | SWITCH                       
+  | BREAK                         
+  | WHILE                         
+  | DO_WHILE                      
+  | DO_UNTIL                      
+  | CONTINUE                
+  | RETURN                       
+  | PRINT                         
+  | TOLOWER_OR_TOUPPER_OR_ROUND   
+  | NATIVAS                       
+  | PUSH_OR_POP_ARREGLO           
+  | ASIGNACION_ARREGLOS           
+  | ACCESSO_VECTOR              
+  | MODIFICAR_VECTOR              
+  | DECLARACION_FUNCION_OR_METODO 
+  | LLAMADA_FUNCION               
+  | RUN                           
+
+
+DECLARACION_VARIABLE 
+  : TIPO_DEC_VARIABLE LISTA_DECLARACIONES punto_coma 
+
+
+ASIGNACION 
+      : id TIPO_IGUAL EXP punto_coma 
+
+TIPO_DEC_VARIABLE
+  : int           
+  | double     
+  | char          
+  | boolean      
+  | string     
+  | void        
+
+ 
+LISTA_DECLARACIONES 
+  : LISTA_DECLARACIONES coma DEC_ID_EXP               
+  | LISTA_DECLARACIONES coma DEC_ID                  
+  | DEC_ID_EXP                                        
+  | DEC_ID                                            
+  | CASTEO                                            
+
+
+
+DEC_ID_EXP 
+  : id igual EXP 
+
+
+DEC_ID  
+  : id  
+
+
+CASTEO
+    : id igual par_izq TIPO_DEC_VARIABLE par_der EXP 
+
+EXP
+  : menos EXP                  
+  | EXP mas EXP                            
+  | EXP menos EXP                          
+  | EXP por EXP                             
+  | EXP div EXP                            
+  | EXP mod EXP                           
+  | EXP potencia EXP                       
+  | id mas_mas                              
+  | id menos_menos                          
+  | par_izq EXP par_der                    
+  | EXP mayor EXP                           
+  | EXP menor EXP                           
+  | EXP mayor_igual EXP                     
+  | EXP menor_igual EXP                    
+  | EXP igual_que EXP                       
+  | EXP dif_que EXP                         
+  | EXP and EXP                             
+  | EXP or EXP                             
+  | not EXP                                 
+  | numero_regex                            
+  | string_regex                            
+  | char_regex                              
+  | id                                     
+  | true                                    
+  | false                                  
+  | cor_izq LISTA_EXPRESIONES cor_der       
+  | cor_izq cor_der                        
+  | llave_izq LISTA_EXPRESIONES llave_der   
+  | TERNARIO                              
+  | LLAMADA_FUNCION_EXP                    
+
+
+INCREMENTO_DECREMENTO
+  : id mas_mas punto_coma    
+  | id menos_menos punto_coma 
+  | mas_mas id  punto_coma   
+  | menos_menos id punto_coma 
+
+INSTRUCCION_IF 
+  : IF                       
+  | IF ELSE             
+  | IF LISTA_ELSE_IF         
+  | IF LISTA_ELSE_IF ELSE    
+
+
+IF 
+  : if par_izq EXP par_der llave_izq INSTRUCCIONES llave_der 
+
+ELSE 
+  : else llave_izq INSTRUCCIONES llave_der 
+
+
+ELIF 
+  : elif par_izq EXP par_der llave_izq INSTRUCCIONES llave_der 
+
+
+LISTA_ELSE_IF
+  : LISTA_ELSE_IF ELIF
+  | ELIF                
+
+
+FOR
+  : for par_izq DECLARACION_VARIABLE EXP punto_coma ASIGNACION_FOR par_der llave_izq INSTRUCCIONES llave_der 
+  | for par_izq ASIGNACION EXP punto_coma ASIGNACION_FOR par_der llave_izq INSTRUCCIONES llave_der
+
+
+TIPO_IGUAL 
+  : igual       
+  | mas igual   
+  | menos igual 
+
+
+ASIGNACION_FOR 
+  : id TIPO_IGUAL EXP 
+  | id mas_mas        
+  | id menos_menos     
+  | id menos EXP      
+  | id mas EXP        
+
+
+BREAK 
+  : break punto_coma 
+
+CONTINUE 
+  : continue punto_coma 
+
+RETURN 
+  : return EXP punto_coma
+  | return punto_coma 
+
+
+
+SWITCH 
+  : switch par_izq EXP par_der llave_izq LISTA_CASE llave_der   
+
+LISTA_CASE 
+  : LISTA_CASE CASE    
+  | CASE               
+  | DEFAULT            
+  | LISTA_CASE DEFAULT  
+
+CASE
+  : case EXP dos_puntos INSTRUCCIONES   
+
+DEFAULT
+  : default dos_puntos INSTRUCCIONES   
+
+
+WHILE 
+  : while par_izq EXP par_der llave_izq INSTRUCCIONES llave_der 
+
+
+DO_WHILE 
+  : do llave_izq INSTRUCCIONES llave_der while par_izq EXP par_der punto_coma 
+
+
+DO_UNTIL 
+  : do llave_izq INSTRUCCIONES llave_der until par_izq EXP par_der punto_coma 
+
+
+
+
+PRINT 
+  : print par_izq LISTA_EXPRESIONES par_der punto_coma   
+  | println par_izq LISTA_EXPRESIONES par_der punto_coma  
+
+LISTA_EXPRESIONES 
+  : LISTA_EXPRESIONES coma EXP            
+  | EXP                                   
+
+
+TOLOWER_OR_TOUPPER_OR_ROUND
+  :  TIPO_DEC_VARIABLE id igual tolower par_izq EXP par_der punto_coma 
+  |  TIPO_DEC_VARIABLE id igual toupper par_izq EXP par_der punto_coma 
+  |  TIPO_DEC_VARIABLE id igual round par_izq EXP par_der punto_coma 
+
+
+
+NATIVAS
+ :  TIPO_DEC_VARIABLE id igual typeof par_izq EXP par_der punto_coma      
+ |  TIPO_DEC_VARIABLE id igual tochararray par_izq EXP par_der punto_coma 
+ |  TIPO_DEC_VARIABLE id igual tostring par_izq EXP par_der punto_coma    
+ |  TIPO_DEC_VARIABLE id igual length par_izq EXP par_der punto_coma      
+
+
+PUSH_OR_POP_ARREGLO
+  : id punto push par_izq EXP par_der punto_coma  
+  | id punto  pop par_izq par_der punto_coma       
+
+
+ASIGNACION_ARREGLOS 
+  : TIPO_DEC_VARIABLE  cor_izq cor_der ARREGLO_TIPO punto_coma   
+
+ARREGLO_TIPO
+  : id igual new TIPO_DEC_VARIABLE  NEW_ARREGLO                    
+  | id igual llave_izq  LISTA_EXPRESIONES llave_der                 
+  | cor_izq cor_der id igual new TIPO_DEC_VARIABLE  NEW_ARREGLO  NEW_ARREGLO        
+  | cor_izq cor_der id igual llave_izq  LISTA_EXPRESIONES llave_der                
+
+NEW_ARREGLO 
+  : cor_izq PRIMERO_ARRAY cor_der                 
+
+
+PRIMERO_ARRAY
+    : par_izq TIPO_DEC_VARIABLE par_der EXP       
+    | EXP                                          
+
+
+ACCESSO_VECTOR
+    : TIPO_DEC_VARIABLE id igual  id  NEW_ARREGLO punto_coma             
+    | TIPO_DEC_VARIABLE id igual  id  NEW_ARREGLO NEW_ARREGLO punto_coma 
+
+
+MODIFICAR_VECTOR
+    :ASG_VECTOR igual EXP punto_coma  
+
+
+ASG_VECTOR
+  : id NEW_ARREGLO               
+  | id NEW_ARREGLO NEW_ARREGLO   
+
+
+TERNARIO 
+  : EXP interrogacion EXP dos_puntos EXP 
+
+
+DECLARACION_FUNCION_OR_METODO 
+  :  id par_izq LISTA_PARAMETROS par_der dos_puntos TIPO_DEC_VARIABLE llave_izq INSTRUCCIONES llave_der 
+  |  id par_izq par_der dos_puntos TIPO_DEC_VARIABLE llave_izq INSTRUCCIONES llave_der 
+  |  id par_izq par_der llave_izq INSTRUCCIONES llave_der 
+
+LISTA_PARAMETROS 
+  : LISTA_PARAMETROS coma PARAMETRO     
+  | PARAMETRO                           
+
+PARAMETRO 
+  : TIPO_DEC_VARIABLE  id 
+
+
+LLAMADA_FUNCION 
+  : id par_izq par_der punto_coma                  
+  | id par_izq LISTA_EXPRESIONES par_der punto_coma 
+
+LLAMADA_FUNCION_EXP 
+  : id par_izq par_der                     
+  | id par_izq LISTA_EXPRESIONES par_der    
+
+
+RUN  
+  : run id par_izq par_der punto_coma                
+  | run id par_izq LISTA_EXPRESIONES par_der punto_coma 
